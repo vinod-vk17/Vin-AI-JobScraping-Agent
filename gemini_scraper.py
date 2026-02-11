@@ -11,6 +11,7 @@ import json
 import time
 from typing import List, Dict, Optional
 import google.generativeai as genai
+from jobfilter import JobFilter  # ✅ IMPORT ADDED
 
 # Configure Gemini
 GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
@@ -235,13 +236,17 @@ def save_jobs_to_db(jobs: List[Dict]):
 
 def scrape_all_sources(sources_config: Dict):
     """
-    Scrape jobs from all configured sources
+    Scrape jobs from all configured sources with intelligent filtering
     
     Args:
         sources_config: Dictionary of sources from sources_config.py
     """
     scraper = GeminiJobScraper()
-    total_jobs = []
+    job_filter = JobFilter()  # ✅ INITIALIZE FILTER
+    
+    total_scraped = 0
+    total_filtered = 0
+    filtered_jobs = []
     
     for source_name, source_data in sources_config.items():
         print(f"\n{'='*60}")
@@ -258,7 +263,17 @@ def scrape_all_sources(sources_config: Dict):
                 
                 try:
                     jobs = scraper.scrape_jobs_from_url(url, company_name, source_name)
-                    total_jobs.extend(jobs)
+                    total_scraped += len(jobs)
+                    
+                    # ✅ APPLY FILTERS
+                    for job in jobs:
+                        if job_filter.should_keep(job):
+                            filtered_jobs.append(job)
+                            total_filtered += 1
+                        else:
+                            print(f"    ✗ Filtered out: {job.get('title')} - {job.get('location')}")
+                    
+                    print(f"    Found: {len(jobs)} jobs | Kept: {len([j for j in jobs if job_filter.should_keep(j)])} after filtering")
                     
                     # Rate limiting - be respectful
                     time.sleep(2)
@@ -267,14 +282,17 @@ def scrape_all_sources(sources_config: Dict):
                     print(f"  Error: {e}")
                     continue
     
-    # Save all jobs to database
+    # Save filtered jobs to database
     print(f"\n{'='*60}")
     print(f"Scraping Complete")
-    print(f"Total jobs found: {len(total_jobs)}")
+    print(f"{'='*60}")
+    print(f"Total jobs scraped: {total_scraped}")
+    print(f"Jobs after filtering: {total_filtered}")
+    print(f"Filter rate: {((total_scraped - total_filtered) / total_scraped * 100) if total_scraped > 0 else 0:.1f}% filtered out")
     print(f"{'='*60}")
     
-    save_jobs_to_db(total_jobs)
-    return total_jobs
+    save_jobs_to_db(filtered_jobs)
+    return filtered_jobs
 
 
 # Example usage
