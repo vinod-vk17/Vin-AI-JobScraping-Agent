@@ -11,7 +11,10 @@ from datetime import datetime, timedelta
 from contextlib import contextmanager
 import json
 
-app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+app = Flask(__name__, 
+              template_folder=os.path.join(basedir, 'app/templates'),
+              static_folder=os.path.join(basedir, 'app/static'))
 CORS(app)
 
 # Configuration
