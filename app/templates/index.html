@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Tracker - Your AI-Powered Career Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo-icon">🚀</div>
+                    <h1 class="logo-text">Job<span>Tracker</span></h1>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-secondary" id="refreshBtn">
+                        <span class="btn-icon">↻</span>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Bar -->
+            <div class="search-section">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="search-input" 
+                        placeholder="Search by role, company, or location..."
+                    >
+                    <button class="search-clear" id="clearSearch">✕</button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-section">
+                <div class="stat-card total">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Total Jobs</div>
+                        <div class="stat-value" id="totalJobs">0</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card applied">
+                    <div class="stat-icon">✓</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Applied</div>
+                        <div class="stat-value" id="appliedJobs">0</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card pending">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Pending</div>
+                        <div class="stat-value" id="pendingJobs">0</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card failed">
+                    <div class="stat-icon">✕</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Failed</div>
+                        <div class="stat-value" id="failedJobs">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label class="filter-label">Source Category</label>
+                    <div class="filter-chips" id="sourceFilters">
+                        <button class="chip active" data-source="all">All</button>
+                        <!-- Dynamic source chips will be inserted here -->
+                    </div>
+                </div>
+                
+                <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <div class="filter-chips" id="statusFilters">
+                        <button class="chip active" data-status="all">All</button>
+                        <button class="chip" data-status="pending">Pending</button>
+                        <button class="chip" data-status="applied">Applied</button>
+                        <button class="chip" data-status="failed">Failed</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jobs Grid -->
+            <div class="jobs-section">
+                <div class="jobs-header">
+                    <h2 class="section-title">Available Positions</h2>
+                    <div class="jobs-count" id="jobsCount">0 jobs</div>
+                </div>
+                
+                <div class="jobs-grid" id="jobsGrid">
+                    <!-- Job cards will be inserted here dynamically -->
+                </div>
+                
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState">
+                    <div class="loading-spinner"></div>
+                    <p>Loading opportunities...</p>
+                </div>
+                
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">🔍</div>
+                    <h3>No jobs found</h3>
+                    <p>Try adjusting your filters or search terms</p>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="pagination-btn" id="prevPage">← Previous</button>
+                <div class="pagination-info" id="pageInfo">Page 1 of 1</div>
+                <button class="pagination-btn" id="nextPage">Next →</button>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Powered by Gemini AI • Tracking <span id="footerTotal">0</span> opportunities</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
